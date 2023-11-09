@@ -1,12 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 
-function QuestionList() {
+const QuestionList = ({ questions }) => {
   return (
-    <section>
-      <h1>Quiz Questions</h1>
-      <ul>{/* display QuestionItem components here after fetching */}</ul>
-    </section>
+    <div>
+      <h2>Question List</h2>
+      <ul>
+        {questions.map(question => (
+          <li key={question.id}>{question.prompt}</li>
+        ))}
+      </ul>
+    </div>
   );
-}
+};
 
-export default QuestionList;
+const App = () => {
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+   
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/questions');
+        const data = await response.json();
+        setQuestions(data);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
+    };
+
+    fetchQuestions();
+  }, []); 
+
+  return (
+    <div>
+      
+      <QuestionList questions={questions} />
+    </div>
+  );
+};
+
+export default App;
